@@ -1,14 +1,14 @@
 "use strict";
 
-var listElement = document.querySelector('.list');
-var itemElementList = listElement.children;
+const listElement = document.querySelector('.list');
+// const itemElementList = listElement.children;
 
 
-var templateElement = document.getElementById('todoTemplate');
-var templateContainer = 'content' in templateElement ? templateElement.content : templateElement;
+const templateElement = document.getElementById('todoTemplate');
+const templateContainer = 'content' in templateElement ? templateElement.content : templateElement;
 
 // сформируем задачки
-var todoList = [
+let todoList = [
     {
         name: 'Позвонить в сервис',
         status: 'todo'
@@ -29,7 +29,7 @@ var todoList = [
 
 // функция по генерации элементов
 function addTodoFromTemplate(todo) {
-    var newElement = templateContainer.querySelector('.task').cloneNode(true);
+    const newElement = templateContainer.querySelector('.task').cloneNode(true);
     newElement.querySelector('.task__name').textContent = todo.name;
     setTodoStatusClassName(newElement, todo.status === 'todo');
 
@@ -42,8 +42,8 @@ function setTodoStatusClassName(todo, flag) {
 }
 
 function onListClick(event) {
-    var target = event.target;
-    var element;
+    const target = event.target;
+    let element;
 
     if (isStatusBtn(target)) {
         element = target.parentNode;
@@ -65,7 +65,7 @@ function isDeleteBtn(target) {
 }
 
 function changeTodoStatus(element) {
-    var isTodo = element.classList.contains('task_todo');
+    const isTodo = element.classList.contains('task_todo');
     setTodoStatusClassName(element, !isTodo);
 }
 
@@ -78,27 +78,25 @@ function onInputKeydown(event) {
         return;
     }
 
-    var ENTER_KEYCODE = 13;
+    const ENTER_KEYCODE = 13;
     if (event.keyCode !== ENTER_KEYCODE) {
         return;
     }
 
-    var todoName = inputElement.value.trim();
+    const todoName = inputElement.value.trim();
 
     if (todoName.length === 0 || checkIfTodoAlreadyExists(todoName)) {
         return;
     }
 
-    var todo = createNewTodo(todoName);
+    const todo = createNewTodo(todoName);
     insertTodoElement(addTodoFromTemplate(todo));
     inputElement.value = '';
 }
 
 function checkIfTodoAlreadyExists(todoName) {
-    var todoElements = listElement.querySelectorAll('.task__name');
-    var namesList = Array.prototype.map.call(todoElements, function(element) {
-        return element.textContent;
-    });
+    const todoElements = listElement.querySelectorAll('.task__name');
+    const namesList = Array.prototype.map.call(todoElements, element => element.textContent);
     return namesList.indexOf(todoName) > -1;
 }
 
@@ -115,7 +113,7 @@ todoList
 
 listElement.addEventListener('click', onListClick);
 
-var inputElement = document.querySelector('.add-task__input');
+const inputElement = document.querySelector('.add-task__input');
 inputElement.addEventListener('keydown', onInputKeydown);
 
 // Задача:
