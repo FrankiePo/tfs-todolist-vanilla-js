@@ -4,6 +4,31 @@ const listElement = document.querySelector('.list');
 const filtersElement = document.querySelector('.filters');
 // const itemElementList = listElement.children;
 
+class Statistics {
+    constructor() {
+        const statisticElement = document.querySelector('.statistic');
+        this.total = statisticElement.querySelector('.statistic__total');
+        this.done = statisticElement.querySelector('.statistic__done');
+        this.todo = statisticElement.querySelector('.statistic__left');
+    }
+    _get(type) { return parseInt(this[type].innerHTML) }
+    _set(type, value) { this[type].innerHTML = value }
+
+    _add(type) { this._set(type ,this._get(type) + 1) }
+    _rm(type) { this._set(type ,this._get(type) - 1) }
+
+    add(type) {
+        if (type == 'total') return;
+        this._add('total');
+        this._add(type);
+    }
+    rm(type) {
+        if (type == 'total') return;
+        this._rm('total');
+        this._rm(type);
+    }
+}
+const statistics = new Statistics();
 
 const templateElement = document.getElementById('todoTemplate');
 const templateContainer = 'content' in templateElement ? templateElement.content : templateElement;
@@ -73,12 +98,19 @@ function isDeleteBtn(target) {
     return target.classList.contains('task__delete-button');
 }
 
+function isTodoElem(element) {
+    return element.classList.contains('task_todo');
+}
+
 function changeTodoStatus(element) {
-    const isTodo = element.classList.contains('task_todo');
-    setTodoStatusClassName(element, !isTodo);
+    const [prevType, newType] = isTodoElem(element) ? ['todo', 'done'] : ['done', 'todo'];
+    statistics.rm(prevType);
+    statistics.add(newType);
+    setTodoStatusClassName(element, !isTodoElem(element));
 }
 
 function deleteTodo(element) {
+    statistics.rm(isTodoElem(element) ? 'todo': 'done');
     listElement.removeChild(element);
 }
 
@@ -100,6 +132,7 @@ function onInputKeydown(event) {
 
     const todo = createNewTodo(todoName);
     insertTodoElement(addTodoFromTemplate(todo));
+    statistics.add('todo');
     inputElement.value = '';
 }
 
@@ -119,6 +152,11 @@ function createNewTodo(name) {
 todoList
     .map(addTodoFromTemplate)
     .forEach(insertTodoElement);
+
+// Add statistics:
+todoList
+    .map(todo => todo.status)
+    .forEach(type => statistics.add(type));
 
 listElement.addEventListener('click', onListClick);
 filtersElement.addEventListener('click', onFilterBtnClick);
