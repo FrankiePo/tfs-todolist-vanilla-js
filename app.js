@@ -1,6 +1,7 @@
 "use strict";
 
 const listElement = document.querySelector('.list');
+const filtersElement = document.querySelector('.filters');
 // const itemElementList = listElement.children;
 
 
@@ -54,6 +55,14 @@ function onListClick(event) {
         element = target.parentNode;
         deleteTodo(element);
     }
+}
+
+function onFilterBtnClick(event) {
+    const curFilter = event.target;
+    if (!curFilter.classList.contains('filters__item')) return;
+    const oldFilters = filtersElement.querySelectorAll('.filters__item_selected');
+    Array.prototype.map.call(oldFilters, element => element.classList.remove('filters__item_selected'));
+    curFilter.classList.add('filters__item_selected');
 }
 
 function isStatusBtn(target) {
@@ -112,6 +121,7 @@ todoList
     .forEach(insertTodoElement);
 
 listElement.addEventListener('click', onListClick);
+filtersElement.addEventListener('click', onFilterBtnClick);
 
 const inputElement = document.querySelector('.add-task__input');
 inputElement.addEventListener('keydown', onInputKeydown);
