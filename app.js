@@ -81,6 +81,14 @@ function onListClick(event) {
         deleteTodo(element);
     }
 }
+function filterList(curFilter) {
+    const filter = curFilter || filtersElement.querySelector('.filters__item_selected');
+    const filterType = filter.getAttribute('data-filter');
+    const taskType = `task_${filterType}`;
+    const ul = [].slice.call(listElement.children);
+    ul.map(li => li.classList.remove('list__item_hidden'));
+    ul.filter(li => li.classList.contains(taskType)).map(li => li.classList.add('list__item_hidden'));
+}
 
 function onFilterBtnClick(event) {
     const curFilter = event.target;
@@ -88,6 +96,7 @@ function onFilterBtnClick(event) {
     const oldFilters = filtersElement.querySelectorAll('.filters__item_selected');
     Array.prototype.map.call(oldFilters, element => element.classList.remove('filters__item_selected'));
     curFilter.classList.add('filters__item_selected');
+    filterList(curFilter);
 }
 
 function isStatusBtn(target) {
@@ -133,6 +142,7 @@ function onInputKeydown(event) {
     const todo = createNewTodo(todoName);
     insertTodoElement(addTodoFromTemplate(todo));
     statistics.add('todo');
+    filterList();
     inputElement.value = '';
 }
 
